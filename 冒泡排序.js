@@ -6,20 +6,23 @@ function bubbleSort(arr) {
         return
     }
     let temp, isChange,
-        len = arr.length;
+        lastChangeIndex = 0,
+        len = arr.length, sortBorder = len - 1;
     for (let i = 0; i < len - 1; i++) {
         //添加isChange标记，记录一趟冒泡中是否发生元素互换
-        isChange = false
-        for (let j = 0; j < len - 1 - i; j++) {
+        isChange = false;
+        for (let j = 0; j < sortBorder; j++) {
             if (arr[j] > arr[j + 1]) {
                 // [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]]
                 temp = arr[j]
                 arr[j] = arr[j + 1]
                 arr[j + 1] = temp
                 isChange = true;
+                lastChangeIndex = j;
             }
         }
-        if(!isChange) break;
+        if (!isChange) break;
+        sortBorder = lastChangeIndex;
     }
     return arr
 }
