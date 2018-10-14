@@ -43,4 +43,34 @@ function unique_sort_2(arr) {
     return arr.slice(0, i + 1);
 }
 
-console.log(unique_sort_2([2, 3, 4, 3, 2]));
+//利用object;有个缺点，会改变数据类型，且无法分辨字符串和数字
+function unique_object(arr) {
+    if (!(arr instanceof Array)) return;
+    let obj = {}, ans = [], len = arr.length;
+    for (let i = 0; i < len; i++) {
+        if (arr[i] in obj) {
+            obj[arr[i]] += 1;
+        } else {
+            obj[arr[i]] = 1;
+            ans.push(arr[i]);
+        }
+    }
+    return ans;
+}
+
+//利用Map数据
+function unique_map(arr) {
+    if (!(arr instanceof Array)) return;
+    let map = new Map(), ans = [], len = arr.length;
+    for (let i = 0; i < len; i++) {
+        if (map.has(arr[i])) {
+            map.set(arr[i], map.get(arr[i]) + 1)
+        } else {
+            map.set(arr[i], 1);
+            ans.push(arr[i]);
+        }
+    }
+    return ans;
+}
+
+console.log(unique_map([2, 3, '2', 4, 3, 2]));
