@@ -20,7 +20,7 @@ function isPalindrome_one(str) {
 
 console.log(isPalindrome_one('asdfgdsa'))
 
-// method two:利用栈现金后出的思想
+// method two:利用栈先进后出的思想
 function isPalindrome_two(str) {
     if (typeof str !== 'string') return null;
     let next, stack = [], len = str.length, mid = parseInt(len / 2) - 1;
