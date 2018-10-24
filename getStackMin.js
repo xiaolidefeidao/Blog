@@ -127,7 +127,7 @@ function Solution_four() {
     }
   };
   stack.pop = function () {
-    if (this.length - 1 === this.tStack.slice(-1)[0]) this.tStack.pop();   //出栈时，stack队尾的index与tStack队尾的index相等时tStack出栈
+    if (this.length - 1 === this.tStack.slice(-1)[0]) this.tStack.pop();   //出栈时，stack队尾的index与tStack队尾储存的index值相等时tStack出栈
     return [].pop.call(this);
   };
   stack.getMin = function () {
