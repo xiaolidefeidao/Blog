@@ -127,7 +127,7 @@ function Solution_four() {
     }
   };
   stack.pop = function () {
-    if (this.length - 1 === this.tStack.slice(-1)[0]) this.tStack.pop();   //出栈时，stack队尾的index与tStack队尾储存的index值相等时tStack出栈
+    if (this.length - 1 === this.tStack.slice(-1)[0]) this.tStack.pop();   //出栈时，stack队尾的index与tStack队尾的index相等时tStack出栈
     return [].pop.call(this);
   };
   stack.getMin = function () {
@@ -156,7 +156,8 @@ function Solution_four() {
 
 
 //使用es6写法
-function Solution_final() {
+//本例没有讨论push多参数的情况
+function Solution_five() {
 class Stack extends Array{
   constructor(){
     super();
@@ -198,6 +199,45 @@ let stack=new Stack();
   console.log(stack);
   console.log(stack.getMin());
 }
-Solution_final();
+// Solution_five();
 
-//PS:本例没有讨论push多参数的情况
+//讨论push多参数的情况
+function Solution_final(){
+  class Stack extends Array{
+    constructor(...args){
+      super();
+      this.tStack=[];
+      this.push(...args);
+    }
+    push(...args){
+      for(const i of args){
+        super.push(i);
+        if (this.tStack.length === 0) {
+          this.tStack.push(0);
+          continue;
+        }
+        if (i < this[this.tStack.slice(-1)[0]]) {
+          this.tStack.push(this.length - 1)     //只有小于当前最小值，将元素index入栈tStack
+        }
+      }
+    }
+    pop(){
+      if (this.length - 1 === this.tStack.slice(-1)[0]) this.tStack.pop();   //出栈时，stack队尾的index与tStack队尾的index相等时tStack出栈
+      return super.pop();
+    }
+    getMin(){
+      return this[this.tStack.slice(-1)[0]];
+    }
+  }
+  let stack=new Stack(3,2,1,1,-2,1,1,-1);
+  //测试
+  stack.push(8);
+  console.log(stack.getMin());
+  console.log(stack);
+  stack.pop();
+  stack.pop();
+  stack.push(-8,10);
+  console.log(stack);
+  console.log(stack.getMin());
+}
+Solution_final();
