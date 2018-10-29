@@ -1,11 +1,11 @@
 'use strict'
 
 //使用Set
-/*function unique_set(arr) {
+function unique_set(arr) {
     if (!(arr instanceof Array)) return;
     let ans = new Set(arr);
     return [...ans]
-}*/
+}
 
 //使用filter
 function unique_filter(arr) {
