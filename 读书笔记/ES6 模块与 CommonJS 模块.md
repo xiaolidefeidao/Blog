@@ -51,7 +51,7 @@
 
 1. 执行 `let a=require('./'+'b')` 时，首先加载执行 `b.js` 文件；
 1. 在 `b.js` 中执行 `console.log('load b');` ，打印出 `load b`；
-1. 给foo、x赋值；将匿名回调函数 `() => {foo.bar = 'baz';x = 20;}` 加入事件队列，**500ms**后执行；
+1. 给foo、x赋值；将匿名回调函数 `() => {foo.bar = 'baz';x = 20;}` 加入事件队列，**500 ms** 后执行；
 1. 导出对象 `{foo, x}`；在Node的运存中缓存了这样一个**对象L**：
 
 	    {
@@ -62,11 +62,11 @@
 	    }
 1. 回到 `a.js` 将上述对象 L 的 **exports 赋值给 a**；
 2. 执行 `console.log(a);`，打印 `{ foo: { bar: 'bar' }, x: 10 }`；
-3. 将匿名回调函数 `console.log(a)` 加入事件队列，**1000ms** 后执行；
-4. 将匿名回调函数 `() => {a=1;console.log(a);require('./c');}` 加入事件队列，**2000ms** 后执行；
-5. **500ms** 后执行匿名回调函数 `() => {foo.bar = 'baz';x = 20;}`；**此时缓存中对象 L 的值不会更新**，L.exports.foo 的值不变，指针 p 依然指向 `b.js` 中的局部变量 foo，而此时 `foo.bar===baz`，L.exports.x 依然等于 10，`b.js` 中的局部变量 `x===20`；
-6. 再过 **500ms** 后 `a.js` 执行匿名回调函数 `console.log(a)`；此时 a 对应的值*（L.exports）*为 `{ foo: { bar: 'baz' }, x: 10 }` 并打印出来；
-7. 再过 **1000ms** 后 `a.js` 执行匿名回调函数 `() => {a=1;console.log(a);require('./c');}`；a赋值为1，并打印出来；执行 `require('./c')`，加载 `c.js` 模块；
+3. 将匿名回调函数 `console.log(a)` 加入事件队列，**1000 ms** 后执行；
+4. 将匿名回调函数 `() => {a=1;console.log(a);require('./c');}` 加入事件队列，**2000 ms** 后执行；
+5. **500 ms** 后执行匿名回调函数 `() => {foo.bar = 'baz';x = 20;}`；**此时缓存中对象 L 的值不会更新**，L.exports.foo 的值不变，指针 p 依然指向 `b.js` 中的局部变量 foo，而此时 `foo.bar===baz`，L.exports.x 依然等于 10，`b.js` 中的局部变量 `x===20`；
+6. 再过 **500 ms** 后 `a.js` 执行匿名回调函数 `console.log(a)`；此时 a 对应的值*（L.exports）*为 `{ foo: { bar: 'baz' }, x: 10 }` 并打印出来；
+7. 再过 **1000 ms** 后 `a.js` 执行匿名回调函数 `() => {a=1;console.log(a);require('./c');}`；a赋值为1，并打印出来；执行 `require('./c')`，加载 `c.js` 模块；
 8. 在 `c.js` 中执行 `console.log('load c');`，打印出 `load c` ；
 9. 执行 `let c=require('./b')`，首先加载 `b.js`，Node会去缓存中查找对象L,如果 `L.loaded===true`,直接取缓存的数据，不会再执行 `b.js`；直接将L.exports赋值给c；
 10. 打印出c的值 `{ foo: { bar: 'baz' }, x: 10 }`。
@@ -167,3 +167,7 @@ ES6 输入的模块变量，只是一个“**符号连接**”，所以这个变
     import './y';
 
 执行 main.js，输出的是 1。
+
+
+
+
