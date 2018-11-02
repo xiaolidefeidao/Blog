@@ -20,7 +20,7 @@
 	setTimeout(() => {
 	  a=1;       //ES6 模块输出的是值的引用,如果a是import导入，不能给a使用赋值表达式。
 	  console.log(a);
-	  require('./c');  //此处不会发生变量提升；import会提升到模块的头部
+	  require('./c');  //此处不会发生变量提升；import会提升到模块的头部，但必须处于模块顶层
 	}, 2000);
 	
 	//b.js
