@@ -146,5 +146,60 @@ Babel的相关配置可以在目录下使用.babelIrc文件来处理。
 	    "test": "echo 'Error: no test specified' && exit 1"
       }
 
-    
+## 三、webpack如何解析代码模块路径 ##
 
+Node 的模块解析规则：
+- 解析相对路径
+	1. 查找相对当前模块的路径下是否有对应文件或文件夹
+	2. 是文件则直接加载（如果文件没有后缀会依次查找.js/.node/.json后缀）
+	3. 是文件夹则继续查找文件夹下的 package.json 文件
+	4. 有 package.json 文件则按照文件中 main 字段的文件名来查找文件(*resolve.mainFields*)
+	5. 无 package.json 或者无 main 字段则查找 index.js 文件(*resolve.mainFiles*)
+- 解析模块名
+查找当前文件目录下，父级目录及以上目录下的 node_modules 文件夹，看是否有对应名称的模块
+- 解析绝对路径（不建议使用）
+直接查找对应路径的文件
+
+webpack 中有一个很关键的模块 enhanced-resolve 处理依赖模块路径的解析。在 webpack 配置中，和模块路径解析相关的配置都在 resolve 字段下：
+
+```javascript
+module.exports = {
+  resolve: {
+    // ...
+  }
+}
+```
+
+### resolve.alias
+
+假设我们有个 utils 模块极其常用，经常编写相对路径很麻烦，希望可以直接 import 'utils' 来引用，那么我们可以配置某个模块的别名，如：
+
+```javascript
+alias: {
+  utils: path.resolve(__dirname, 'src/utils') // 这里使用 path.resolve 和 __dirname 来获取绝对路径
+}
+```
+
+上述的配置是模糊匹配，意味着只要模块路径中携带了 utils 就可以被替换掉，如：
+```javascript
+import 'utils/query.js' // 等同于 import '[项目绝对路径]/src/utils/query.js'
+```
+
+如果需要进行精确匹配可以使用：
+```javascript
+alias: {
+  utils$: path.resolve(__dirname, 'src/utils') // 只会匹配 import 'utils'
+}
+```
+
+### resolve.extensions
+
+```javascript
+extensions: ['.wasm', '.mjs', '.js', '.json', '.jsx'],
+// 这里的顺序代表匹配后缀的优先级，例如对于 index.js 和 index.jsx，会优先选择 index.js
+```
+这个配置可以定义在进行模块路径解析时，webpack 会尝试帮你补全那些后缀名来进行查找。
+
+### resolve.mainFields
+
+有 package.json 文件则按照文件中 main 字段的文件名来查找文件
