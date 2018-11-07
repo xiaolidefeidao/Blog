@@ -149,6 +149,7 @@ Babel的相关配置可以在目录下使用.babelIrc文件来处理。
 ## 三、webpack如何解析代码模块路径 ##
 
 Node 的模块解析规则：
+
 - 解析相对路径
 	1. 查找相对当前模块的路径下是否有对应文件或文件夹
 	2. 是文件则直接加载（如果文件没有后缀会依次查找.js/.node/.json后缀）
@@ -203,3 +204,119 @@ extensions: ['.wasm', '.mjs', '.js', '.json', '.jsx'],
 ### resolve.mainFields
 
 有 package.json 文件则按照文件中 main 字段的文件名来查找文件
+
+
+## 四、配置 loader ##
+
+### 规则条件配置 ###
+
+- { test: ... } 匹配特定条件
+- { include: ... } 匹配特定路径
+- { exclude: ... } 排除特定路径
+- { and: [...] }必须匹配数组中所有条件
+- { or: [...] } 匹配数组中任意一个条件
+- { not: [...] } 排除匹配数组中所有条件
+
+上述的所谓条件的值可以是：
+
+- 字符串：必须以提供的字符串开始，所以是字符串的话，这里我们需要提供绝对路径
+- 正则表达式：调用正则的 test 方法来判断匹配
+- 函数：(path) => boolean，返回 true 表示匹配
+- 数组：至少包含一个条件的数组
+- 对象：匹配所有属性值的条件
+
+示例：
+
+    rules: [
+	  {
+	    test: /\.jsx?/, // 正则
+	    include: [
+	      path.resolve(__dirname, 'src'), // 字符串，注意是绝对路径
+	    ], // 数组
+	    // ...
+	  },
+	  {
+	    test: {
+	      js: /\.js/,
+	      jsx: /\.jsx/,
+	    }, // 对象，不建议使用
+	    not: [
+	      (value) => { /* ... */ return true; }, // 函数，通常需要高度自定义时才会使用
+	    ],
+	  },
+	],
+
+### 使用 loader 配置 ###
+
+use字段为数组，则从右向左执行，示例：
+
+    rules: [
+      {
+	    test: /\.less/,
+	    use: [
+	      'style-loader', // 直接使用字符串表示 loader
+	      {
+		    loader: 'css-loader',
+		    options: {
+		      importLoaders: 1
+		    },
+	      }, // 用对象表示 loader，可以传递 loader 配置等
+	      {
+		    loader: 'less-loader',
+		    options: {
+		      noIeCompat: true
+	    }, // 传递 loader 配置
+	      },
+	    ],
+	  },
+    ],
+
+### loader 应用顺序 ###
+
+看一份这样的配置：
+
+    rules: [
+      {
+    test: /\.js$/,
+    exclude: /node_modules/,
+    loader: "eslint-loader",
+      },
+      {
+    test: /\.js$/,
+    exclude: /node_modules/,
+    loader: "babel-loader",
+      },
+    ],
+
+所有的 loader 按照前置 -> 行内 -> 普通 -> 后置的顺序执行。所以当我们要确保 eslint-loader 在 babel-loader 之前执行时，可以如下添加 `enforce` 配置：
+
+    rules: [
+      {
+	    enforce: 'pre', // 指定为前置类型
+	    test: /\.js$/,
+	    exclude: /node_modules/,
+	    loader: "eslint-loader",
+      },
+    ]
+
+### 使用 noParse ###
+
+对于一些不需要解析依赖（即无依赖） 的第三方大型类库等，可以通过这个字段来配置，以提高整体的构建速度。
+
+> 使用 noParse 进行忽略的模块文件中不能使用 import、require、define 等导入机制；可以与 ProvidePlugin 结合使用。
+
+	module.exports = {
+	  // ...
+	  module: {
+	    noParse: /jquery|lodash/, // 正则表达式
+	
+	    // 或者使用 function
+	    noParse(content) {
+	      return /jquery|lodash/.test(content)
+	    },
+	  }
+	}
+
+
+
+
