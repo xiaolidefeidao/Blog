@@ -317,6 +317,63 @@ use字段为数组，则从右向左执行，示例：
 	  }
 	}
 
+## 五、使用 plugin ##
 
+### DefinePlugin ###
 
+这个插件用于创建一些在编译时可以配置的全局常量，这些常量的值我们可以在 webpack 的配置中去指定，例如：
+
+    module.exports = {
+      // ...
+      plugins: [
+	    new webpack.DefinePlugin({
+	      PRODUCTION: JSON.stringify(true), // const PRODUCTION = true
+	      VERSION: JSON.stringify('5fa3b9'), // const VERSION = '5fa3b9'
+	      BROWSER_SUPPORTS_HTML5: true, // const BROWSER_SUPPORTS_HTML5 = 'true'
+	      TWO: '1+1', // const TWO = 1 + 1,
+	      CONSTANTS: {
+	    	APP_VERSION: JSON.stringify('1.1.2') // const CONSTANTS = { APP_VERSION: '1.1.2' }
+	      }
+    }),
+      ],
+    }
+
+### copy-webpack-plugin ###
+
+我们一般会把开发的所有源码和资源文件放在 src/ 目录下，构建的时候产出一个 build/ 目录，通常会直接拿 build 中的所有文件来发布。有些文件没经过 webpack 处理，但是我们希望它们也能出现在 build 目录下，这时就可以使用 CopyWebpackPlugin 来处理了。
+
+const CopyWebpackPlugin = require('copy-webpack-plugin')
+
+    module.exports = {
+      // ...
+      plugins: [
+	    new CopyWebpackPlugin([
+	      { from: 'src/file.txt', to: 'build/file.txt', }, // 顾名思义，from 配置来源，to 配置目标路径
+	      { from: 'src/*.ico', to: 'build/*.ico' }, // 配置项可以使用 glob
+	      // 可以配置很多项复制规则
+	    ]),
+      ],
+    }
+
+### ProvidePlugin ###
+
+该组件用于引用某些模块作为应用运行时的变量，从而不必每次都用 require 或者 import，其用法相对简单：
+
+    new webpack.ProvidePlugin({
+      identifier: 'module',
+      _: 'lodash',
+      $: 'jquery'
+      // ...
+    })
+
+### IgnorePlugin ###
+
+个插件用于忽略某些特定的模块，让 webpack 不把这些指定的模块打包进去。例如我们使用 moment.js，直接引用后，里边有大量的 i18n 的代码，导致最后打包出来的文件比较大，而实际场景并不需要这些 i18n 的代码，这时我们可以使用 IgnorePlugin 来忽略掉这些代码文件，配置如下：
+
+    module.exports = {
+      // ...
+      plugins: [
+    	new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/)
+      ]
+    }
 
