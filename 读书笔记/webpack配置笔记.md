@@ -60,32 +60,32 @@
 	      /*  {
 	      test:/\.css$/,
 	      include: [
-	    path.resolve(__dirname, 'src')
+	    	path.resolve(__dirname, 'src')
 	      ],
 	      use: ['style-loader','css-loader']
 	    }*/
 	    
 	      //在webpack4.0之后使用mini-css-extract-plugin将CSS从JS中提取出来
 	      {
-	    test: /\.css$/,
-	    include: [
-	      path.resolve(__dirname, 'src')
-	    ],
-	    use: [{
-	      loader: MiniCssExtractPlugin.loader,
-	      options: {
-	    // you can specify a publicPath here
-	    // by default it use publicPath in webpackOptions.output
-	    // publicPath: '../'
-	      }
-	    }, 'css-loader']
+		    test: /\.css$/,
+		    include: [
+		      path.resolve(__dirname, 'src')
+		    ],
+		    use: [{
+		      loader: MiniCssExtractPlugin.loader,
+		      options: {
+			    // you can specify a publicPath here
+			    // by default it use publicPath in webpackOptions.output
+			    // publicPath: '../'
+		      }
+		    }, 'css-loader']
 	      },
 	     {
-	    test: /\.scss$/,
-	    include: [
-	      path.resolve(__dirname, 'src')
-	    ],
-	    use: [MiniCssExtractPlugin.loader, 'css-loader','sass-loader']
+		    test: /\.scss$/,
+		    include: [
+		      path.resolve(__dirname, 'src')
+		    ],
+		    use: [MiniCssExtractPlugin.loader, 'css-loader','sass-loader']
 	      },
 	    ]
   	}
@@ -277,14 +277,14 @@ use字段为数组，则从右向左执行，示例：
 
     rules: [
       {
-    test: /\.js$/,
-    exclude: /node_modules/,
-    loader: "eslint-loader",
+	    test: /\.js$/,
+	    exclude: /node_modules/,
+	    loader: "eslint-loader",
       },
       {
-    test: /\.js$/,
-    exclude: /node_modules/,
-    loader: "babel-loader",
+	    test: /\.js$/,
+	    exclude: /node_modules/,
+	    loader: "babel-loader",
       },
     ],
 
@@ -419,5 +419,5 @@ package 中的 scripts 配置：
 - 开发环境需要打印 debug 信息
 - 开发环境需要 live reload 或者 hot reload 的功能
 
-### 七、优化前端资源加载 ###
+## 七、优化前端资源加载 ##
 
