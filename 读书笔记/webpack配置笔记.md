@@ -377,3 +377,47 @@ const CopyWebpackPlugin = require('copy-webpack-plugin')
       ]
     }
 
+## 六、webpack-dev-server 的使用 ##
+
+package 中的 scripts 配置：
+
+    {
+      // ...
+      "scripts": {
+	    "dev": "webpack-dev-server --mode development"
+      }
+    }
+
+配置devServer:
+
+    module.exports = {
+      // ...
+      plugins: [
+    	new webpack.NamedModulesPlugin(), // 用于启动 HMR 时可以显示模块的相对路径
+    	new webpack.HotModuleReplacementPlugin(), // Hot Module Replacement 的插件
+      ]
+      devServer: {
+	    // proxy: {},
+	    hot: true,//开启HMR
+	    port: '8082',
+	    before(app) {
+	      mock(app) // 调用 mock 函数
+    	}
+      }
+    }
+
+`before` 在 webpack-dev-server 静态资源中间件处理之前，可以用于拦截部分请求返回特定内容，或者实现简单的数据 mock。
+
+`after` 在 webpack-dev-server 静态资源中间件处理之后，比较少用到，可以用于打印日志或者做一些额外处理。
+
+**常见的环境差异配置：**
+
+- 生产环境可能需要分离 CSS 成单独的文件，以便多个页面共享同一个 CSS 文件
+- 生产环境需要压缩 HTML/CSS/JS 代码
+- 生产环境需要压缩图片
+- 开发环境需要生成 sourcemap 文件
+- 开发环境需要打印 debug 信息
+- 开发环境需要 live reload 或者 hot reload 的功能
+
+### 七、优化前端资源加载 ###
+
