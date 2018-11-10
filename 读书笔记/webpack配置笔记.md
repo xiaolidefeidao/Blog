@@ -421,3 +421,198 @@ package 中的 scripts 配置：
 
 ## 七、优化前端资源加载 ##
 
+### 图片压缩 ###
+
+使用 `image-webpack-loader` 压缩图片：
+
+	{
+        test: /\.(png|jpg|gif)$/,
+        use: [
+          {
+            loader: 'url-loader',
+            options: {
+              fallback: 'file-loader',//默认值为 file-loader ；图片大小大于 limit 时交由 fallback 指定的 loader 处理；options 中的配置会被传递给 fallback
+              limit: 8192, // 单位是 Byte，当文件小于 8KB 时作为 DataURL 处理
+              name: 'img/[name]-[hash].[ext]',
+              publicPath: '../'
+            },
+          }, {
+            //压缩图片
+            loader: 'image-webpack-loader',
+            options: {
+              mozjpeg: { // 压缩 jpeg 的配置
+                progressive: true,
+                quality: 65
+              },
+              optipng: { // 使用 imagemin-optipng 压缩 png，enable: false 为关闭
+                enabled: false,
+              },
+              pngquant: { // 使用 imagemin-pngquant 压缩 png
+                quality: '65-90',
+                speed: 4
+              },
+              gifsicle: { // 压缩 gif 的配置
+                interlaced: false,
+              },
+              webp: { // 开启 webp，会把 jpg 和 png 图片压缩为 webp 格式
+                quality: 75
+              },
+            }
+          }
+        ],
+      }
+
+### 代码压缩 ###
+
+webpack 4.x 版本运行时，mode 为 production 即会启动压缩 JS 代码的插件
+
+webpack 3.x 版本使用 uglifyjs-webpack-plugin 压缩 JS 代码
+
+`html-webpack-plugin` 插件可以帮助我们生成需要的 HTML 并对其进行压缩：
+
+    module.exports = {
+      // ...
+      plugins: [
+	    new HtmlWebpackPlugin({
+	      filename: 'index.html', // 配置输出文件名和路径
+	      template: 'assets/index.html', // 配置文件模板
+	      minify: { // 压缩 HTML 的配置
+	    	minifyCSS: true, // 压缩 HTML 中出现的 CSS 代码
+	    	minifyJS: true // 压缩 HTML 中出现的 JS 代码
+	      }
+	    }),
+      ],
+    }
+
+对于 CSS 文件，用来处理 CSS 文件的 css-loader提供了压缩 CSS 代码的功能：
+
+    module.exports = {
+      module: {
+	    rules: [
+	      // ...
+	      {
+	    test: /\.css/,
+	    include: [
+	      path.resolve(__dirname, 'src'),
+	    ],
+	    use: [
+	      'style-loader',
+	      {
+	    loader: 'css-loader',
+	    options: {
+	      minimize: true, // 使用 css 的压缩功能
+	    },
+	      },
+	    ],
+	      },
+	    ],
+      }
+    }
+
+### 分离代码文件 ###
+
+webpack 3.x 版本使用 CommonsChunkPlugin 配置 JS 代码分离；使用 extract-text-webpack-plugin 将 CSS 代码抽离出 JS
+
+webpack 4.x 版本使用 optimization.splitChunks 配置 JS 代码分离；使用 mini-css-extract-plugin 将 CSS 代码抽离出 JS
+
+使用 optimization.splitChunks 配置共享类库可以这么操作：
+
+    module.exports = {
+      entry: {
+    	vendor: ["react", "lodash", "angular", ...], // 指定公共使用的第三方类库
+      },
+      optimization: {
+	    splitChunks: {
+	      cacheGroups: {
+		    vendor: {
+		      chunks: "initial",
+		      test: "vendor",
+		      name: "vendor", // 使用 vendor 入口作为公共部分
+		      enforce: true,
+		    },
+	      },
+	    },
+      },
+      // ... 其他配置
+    }
+    
+    // 或者
+    module.exports = {
+      optimization: {
+	    splitChunks: {
+	      cacheGroups: {
+		    vendor: {
+		      test: /react|angluar|lodash/, // 直接使用 test 来做路径匹配
+		      chunks: "initial",
+		      name: "vendor",
+		      enforce: true,
+		    },
+	      },
+	    },
+      },
+    }
+    
+    // 或者
+    module.exports = {
+      optimization: {
+	    splitChunks: {
+	      cacheGroups: {
+		    vendor: {
+		      chunks: "initial",
+		      test: path.resolve(__dirname, "node_modules") // 路径在 node_modules 目录下的都作为公共部分
+		      name: "vendor", // 使用 vendor 入口作为公共部分
+		      enforce: true,
+		    },
+	      },
+	    },
+      },
+    }
+
+### 按需加载模块 ###
+
+在 webpack 的构建环境中，要按需加载代码模块很简单，遵循 ES 标准的动态加载语法 dynamic-import 来编写代码即可，webpack 会自动处理使用该语法编写的模块：
+
+    // import 作为一个方法使用，传入模块名即可，返回一个 promise 来获取模块暴露的对象
+    // 注释 webpackChunkName: "lodash" 可以用于指定 chunk 的名称，在输出文件时有用
+    import(/* webpackChunkName: "lodash" */ 'lodash').then((_) => { 
+      console.log(_.lash([1, 2, 3])) // 打印 3
+    })
+
+注意一下，如果你使用了 Babel 的话，还需要 babel-plugin-syntax-dynamic-import 这个 Babel 插件来处理 import() 这种语法。
+
+由于动态加载代码模块的语法依赖于 promise，对于低版本的浏览器，需要添加 promise 的 polyfill 后才能使用。
+
+示例：
+
+    //index.js
+    const ele = document.getElementById('span');
+    
+    ele.onclick = function () {
+      import(/* webpackChunkName: "superalert" */'./superalert').then(({ default: superalert }) => {
+    	superalert({ a: 1 })
+      })
+    };
+    
+    //superalert.js
+    export default function superalert(chars) {
+      if (typeof chars === 'string') {
+    	alert(chars)
+      } else {
+    	alert(JSON.stringify(chars))
+      }
+    }
+    
+    //webpack.config.js
+    module.exports = {
+      entry: {
+    	index: './src/js/index.js'
+      }，
+      output: {
+		//在生产环境才能使用chunkhash，development 使用chunkhash会报错
+	    filename: 'js/[name]-[chunkhash].js',//在output.path基础上配置输出文件的路径和文件名
+	    chunkFilename: 'splitjs/[name]-[chunkhash].js',//动态加载的文件名
+	    hashDigestLength: 8 // 默认长度是20
+      },
+    }
+
+
