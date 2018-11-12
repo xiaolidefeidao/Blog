@@ -615,4 +615,21 @@ webpack 4.x 版本使用 optimization.splitChunks 配置 JS 代码分离；使�
       },
     }
 
+## 八、提升 webpack 的构建速度 ##
 
+### 让 webpack 少干点活 ###
+
+- 减少 resolve 的解析
+- 把 loader 应用的文件范围缩小
+- 减少 plugin 的消耗
+- 换种方式处理图片
+
+### 使用 DLLPlugin ###
+
+使用插件 DLLPlugin 时需要额外的一个构建配置，用来打包公共的那一部分代码.
+
+DLLPlugin 构建出来的内容无需每次都重新构建，后续应用代码部分变更时，你不用再执行配置为 webpack.dll.config.js 这一部分的构建，沿用原本的构建结果即可，所以相比 optimization.splitChunks，使用 DLLPlugin 时，构建速度是会有显著提高的。
+
+DLLPlugin 的配置要麻烦得多，并且需要关心你公共部分代码的变化，当你升级 lodash（即你的公共部分代码的内容变更）时，要重新去执行 webpack.dll.config.js 这一部分的构建，不然沿用的依旧是旧的构建结果，使用上并不如 optimization.splitChunks 来得方便。这是一种取舍，根据项目的实际情况采用合适的做法。
+
+html-webpack-plugin 并不会自动处理 DLLPlugin 分离出来的那个公共代码文件，我们需要自己处理这一部分的内容，可以考虑使用 add-asset-html-webpack-plugin
