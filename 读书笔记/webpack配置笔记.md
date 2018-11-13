@@ -1,5 +1,5 @@
 # webpack前端配置笔记 #
-掘金小册《使用webpack定制前端开发环境》读书笔记
+小册《使用webpack定制前端开发环境》读书笔记，相关示例请点击[这里](https://github.com/xiaolidefeidao/webpack_config_lesson “"webpack配置”)。
 
 ## 一、webpack的概念和基础使用 ##
 
