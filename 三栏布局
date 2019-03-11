@@ -135,3 +135,47 @@
 </div>
 </body>
 </html>
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>绝对定位布局</title>
+  <style>
+    .container{
+      position: relative;
+    }
+    .main,.right,.left{
+      top: 0;
+      position: absolute;
+      height: 130px;
+    }
+    .main{
+      background-color: blue;
+      left:200px;
+      right:300px;
+    }
+    .right{
+      width: 300px;
+      right: 0;
+      background-color: red;
+    }
+    .left{
+      width: 200px;
+      background-color: green;
+      left: 0;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  　　
+  <div class="main">main</div>
+  　　
+  <div class="left">left</div>
+  　　
+  <div class="right">right</div>
+</div>
+</body>
+</html>
