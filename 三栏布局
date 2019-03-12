@@ -179,3 +179,105 @@
 </div>
 </body>
 </html>
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>网格布局</title>
+  <style>
+    .container {
+      display: grid;
+      grid-template-columns: 200px auto 300px;
+      grid-template-rows: auto;
+    }
+
+
+    .left {
+      background-color: red;
+    }
+
+    .right {
+      background-color: yellow;
+    }
+
+    .main {
+      background-color: green;
+    }
+
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="left">left</div>
+  <div class="main">
+    main
+    <p>test</p>
+    <p>test</p>
+    <p>test</p>
+    <p>test</p>
+    <p>test</p>
+    <p>test</p>
+    <p>test</p>
+    <p>test</p>
+    <p>test</p>
+
+  </div>
+  <div class="right">right</div>
+</div>
+</body>
+</html>
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>table布局</title>
+  <style>
+    .container {
+      display: table;
+      width: 100%;
+    }
+
+    .left, .main, .right {
+      display: table-cell;
+    }
+
+    .left {
+      width:200px;
+      background-color: red;
+    }
+
+    .right {
+      width: 300px;
+      background-color: yellow;
+    }
+
+    .main {
+      background-color: green;
+    }
+
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="left">left</div>
+  <div class="main">
+    main
+    <p>test</p>
+    <p>test</p>
+    <p>test</p>
+    <p>test</p>
+    <p>test</p>
+    <p>test</p>
+    <p>test</p>
+    <p>test</p>
+    <p>test</p>
+
+  </div>
+  <div class="right">right</div>
+</div>
+</body>
+</html>
