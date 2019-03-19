@@ -210,7 +210,9 @@ http 的管线化，通过持久化连接完成，请求1>请求2>请求3>响应
 	    this.type = 'child'
 	  }
 	
-	  Child.prototype.__proto__ = Parent.prototype;  //Child.prototype = Object.create(Parent.prototype);Child.prototype.constructor = Child
+	  Child.prototype.__proto__ = Parent.prototype;  
+	  //Child.prototype = Object.create(Parent.prototype);Child.prototype.constructor = Child
+	  //Object.setPrototypeOf(Child.prototype,Parent.prototype)
 	  
 	  let child = new Child();
 
