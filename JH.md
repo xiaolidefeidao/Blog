@@ -116,8 +116,17 @@ window > document > document.documentElement > document.body > document.getEleme
 **四个特点**：简单快速、灵活、无连接、无状态
 
 **HTTP 报文的组成部分：**
-- 请求报文：请求行、请求头、空行、请求体
-- 响应报文：状态行、响应头、空行、响应体
+
+- 请求报文：请求行、请求头、空行、请求体  accept accept-encoding accept-language referer cookie user-agent host(指定服务器的域名) cache-control(why?) last-modified-since if-none-match connection 
+
+- 响应报文：状态行、响应头、空行、响应体 content-type content-encoding content-length transfer-encoding:chunked last-modified etag cache-control access-control-allow-origin connection
+
+会存在队头堵塞的问题
+
+**HTTP2**
+
+1. 二进制协议，头信息帧和数据帧；每个请求的所有数据包，称为一个数据流，每个数据流有一个ID，客户端为奇数、服务器端为偶数，解决了队头堵塞的问题；还可以给数据流设置优先级。
+1. 可以将头信息进行压缩；可以将头信息中的重复数据分别放入C、S端的表中，只传相应索引即可。
 
 **请求方法**：get post put delete head options 等
 
@@ -212,8 +221,8 @@ http 的管线化，通过持久化连接完成，请求1>请求2>请求3>响应
 	
 	  Child.prototype.__proto__ = Parent.prototype;  
 	  //Child.prototype = Object.create(Parent.prototype);Child.prototype.constructor = Child
-	  //Object.setPrototypeOf(Child.prototype,Parent.prototype)
-	  
+	  //Object.setPrototypeOf(Child.prototype,Parent.prototype)	  
+
 	  let child = new Child();
 
 # 通信类 #
@@ -224,12 +233,114 @@ http 的管线化，通过持久化连接完成，请求1>请求2>请求3>响应
 - DOM 无法获取
 - AJAX 请求不能发送
 
+跨域方式：
+
+- Hash
+- PostMessage
+- window.name
+- document.domain
+- CORS
+- JSONP
+- websocket
+
+原生 AJAX
+
+xhr.readystate:
+
+- 0 : unsent 刚初始化时
+- 1 : opened 与服务器建立连接
+- 2 : HEADRE_RECEIVED 服务器接收到请求头
+- 3 : LOADIN 请求处理中
+- 4 : DONE 请求完成
+
+# WEB 安全 #
+
+xss
+
+csrf
+
+# 算法 #
+
+## 栈 ##
+
+    function divideByX(x, number) {
+	    if ([2, 4, 8].indexOf(x) === -1) {
+	      throw new Error('不支持该进制转换！')
+	    }
+	    number = parseInt(number);
+	    if (Number.isNaN(number) || number <= 0) throw new Error('请输入正整数');
+	    let stack = [], ans = '';
+	    while (number > 0) {
+	      stack.push(number % x);
+	      number = Math.floor(number / x);
+	    }
+	    while (stack.length !== 0) {
+	      ans += stack.pop();
+	    }
+	    return ans;
+  	}
+
+## 排序 ##
+
+- 快排
+- 冒泡
+- 希尔
+
+## 波兰式和逆波兰式 ##
+
+
+# 浏览器渲染机制 #
+
+- reflow
+- repaint
+
+# JS 运行机制 #
+
+event loop
+同步任务、异步任务
+宏任务、微任务
+
+# 页面性能 #
+
+- 合并压缩，减少 http 请求
+- CDN
+- DSN 预解析
+- 缓存
+- js 文件异步加载， defer、async
+
+# 错误处理 #
+
+两类错误：js 运行错误、资源加载错误
+
+## js 运行错误 ##
+
+- try...catch...finally
+- window.onerror
+
+## 资源加载错误 ##
+
+- object.onerror: `<script onerror=cb src=''></script> //此 error 事件不会冒泡`
+- performance.getEntries()
+- Error 事件捕获: `window.addEventListener('error',cb,true) //在捕获阶段获取 error 事件`
+
+### 跨域资源加载错误 ###
+
+1. 在 script 标签增加 crossorigin 属性
+1. 设置 js 资源响应头 Access-Control-Allow-Oringin : *
+
+## 错误上报 ##
+
+    (new Image()).src = origin/path?search-information
+
+
+# ISO 四层网络 #
+
+1. 应用层
+1. 传输层：TCP（HTTP FTP TELNET SMTP）、UDP（DNS TFTP SNMP）
+1. 网络层
+1. 数据链路层
 
 手写 generator 
 事件中心
 手写ajax 结合promise
 chart 组件
-快排
-二进制转换
-二叉树遍历
-手写bind
