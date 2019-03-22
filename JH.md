@@ -344,3 +344,6 @@ event loop
 事件中心
 手写ajax 结合promise
 chart 组件
+素数
+裴波那契
+轮播  拖放
