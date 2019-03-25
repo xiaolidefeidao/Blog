@@ -288,6 +288,32 @@ csrf
 
 ## 波兰式和逆波兰式 ##
 
+	class MockPromise {
+	    constructor(handler) {
+	      if(typeof handler!=='function') throw new Error('参数需为函数');
+	      this.status = 'pending';
+	      this.value = undefined;
+	      handler(this._resolve.bind(this), this._reject.bind(this));
+	    }
+	
+	    _resolve(val) {
+	      if (this.status !== 'pending') return;
+	      this.value = val;
+	      this.status = 'resolved'
+	    }
+	    _reject(err) {
+	      if (this.status !== 'pending') return;
+	      this.value = err;
+	      this.status = 'rejected'
+	    }
+	    then(...args){
+	      if(this.status === 'resolved'){
+	        args[0]&&args[0](this.value)
+	      }else if(this.status === 'rejected'){
+	        args[1]&&args[1](this.value)
+	      }
+	    }
+  	}
 
 # 浏览器渲染机制 #
 
