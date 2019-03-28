@@ -48,3 +48,4 @@
 1. 清空微任务队列
 1. 在node环境中执行 **会依次打印 timeout1 timeout2 promise1 promise2 promise3**
 
+**在 Node 和浏览器中，同步任务执行完之后，都会先检查微任务队列。
