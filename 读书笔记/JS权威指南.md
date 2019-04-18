@@ -67,4 +67,32 @@ foo.call(null)    foo.call(undefined)   其this指向了全局变量
 
 在ECMAScript中，闭包与函数的[[scope]]直接相关，正如我们提到的那样，[[scope]]在函数创建时被存储，与函数共存亡。实际上，闭包是函数代码和其[[scope]]的结合。因此，作为其对象之一，[[Scope]]包括在函数内创建的词法作用域（父变量对象）。当函数进一步激活时，在变量对象的这个词法链（静态的存储于创建时）中，来自较高作用域的变量将被搜寻。
 
-函数的作用域链在其被创建时确定，静态作用域链
+	var x = 10;
+
+	function foo() {
+
+	  var y = 20;
+
+	  function barFD() { // 函数声明
+	    alert(x);
+	    alert(y);
+	  }
+
+	  var barFE = function () { // 函数表达式
+	    alert(x);
+	    alert(y);
+	  };
+
+	  var barFn = Function('alert(x); alert(y);');
+
+	  barFD(); // 10, 20
+	  barFE(); // 10, 20
+	  barFn(); // 10, "y" is not defined
+
+	}
+
+	foo();
+	
+通过函数构造函数创建的函数的[[scope]]属性总是唯一的全局对象。考虑到这一点，如通过这种函数创建除全局之外的最上层的上下文闭包是不可能的。
+
+**函数的作用域链在其被创建时确定，静态作用域链
