@@ -378,7 +378,26 @@ chart 组件
 对一些get请求，会被浏览器自动缓存，from memory cache
 有些请求会命中强缓存，在请求头会包含cache-control ,from disk cache
 
+	function A() {}
+	A.prototype.x = 10;
 
-当作自己的事；做到极致；
-愿景目标自上而下传达到每一个人，价值观；打胜仗
-永不满足，自驱力
+	var a = new A();
+	alert(a.x); // 10
+
+	A.prototype = {
+	  constructor: A,
+	  x: 20
+	  y: 30
+	};
+
+	// 对象a是通过隐式的[[Prototype]]引用从原油的prototype上获取的值
+	alert(a.x); // 10
+	alert(a.y) // undefined
+
+	var b = new A();
+
+	// 但新对象是从新原型上获取的值
+	alert(b.x); // 20
+	alert(b.y) // 30
+
+对象的原型是对象被创建的时候创建的，并且在此之后不会修改为新的对象，
