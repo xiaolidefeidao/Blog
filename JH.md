@@ -11,7 +11,7 @@
 
 **生成：**
 
-1. display 为 inline-block、table、table-cell 等
+1. display 为 flex、inline-block、table、table-cell 等
 2. position 不为 static、relative,如 absolute、fixed；即脱离文档流
 3. float 不为 none，如 left、right 等；即脱离文档流
 4. overflow 不为 visible，如 auto、hidden 等
