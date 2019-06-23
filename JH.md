@@ -404,4 +404,6 @@ chart 组件
 
 instanceof 操作符是和原型链一起工作的，而不是构造函数.`foo.__proto__===Foo.prototype`即为`true`
 
-JSON.stringify 会把对象中的 function、undefined、null、NaN 都转化为 "null"
+JSON.stringify 会把数组中的 function、undefined、null、NaN 都转化为 "null"
+
+               会把对象中的 function、undefined 省略，把 null、NaN 都转化为 "null"
